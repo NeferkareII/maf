@@ -100,6 +100,7 @@ class MADE(nn.Module):
             size = self.hidden_dims[l]
             self.masks[l + 1] = randint(low=low, high=D - 1, size=size)
 
+
         # Add m for output layer. Output order same as input order.
         self.masks[L + 1] = self.masks[0]
 
@@ -109,9 +110,17 @@ class MADE(nn.Module):
             m_next = self.masks[i + 1]
             # Initialise mask matrix.
             M = torch.zeros(len(m_next), len(m))
-            for j in range(len(m_next)):
+            #for j in range(len(m_next)):
                 # Use broadcasting to compare m_next[j] to each element in m.
-                M[j, :] = torch.from_numpy((m_next[j] >= m).astype(int))
+            #    M[j, :] = torch.from_numpy((m_next[j] >= m).astype(int))
+            if (i == len(self.masks) - 1):
+                for j in range(len(m_next)):
+                    # Use broadcasting to compare m_next[j] to each element in m.
+                    M[j, :] = torch.from_numpy((m_next[j] > m).astype(int))
+            else:
+                for j in range(len(m_next)):
+                    # Use broadcasting to compare m_next[j] to each element in m.
+                    M[j, :] = torch.from_numpy((m_next[j] >= m).astype(int))
             # Append to mask matrix list.
             self.mask_matrix.append(M)
 
